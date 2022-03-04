@@ -41,7 +41,6 @@ class DelayCoordinateEmbeddingNLG:
             )
             for key,delay_coordinate_embedding in self.embed_sequence(tokens=tokens):
                 self.delay_coordinate_embeddings[key] = delay_coordinate_embedding
-        #self.save_delay_coordinate_embeddings()
 
     def embed_sequence(self, tokens:List[str]) -> Generator[Tuple[str,ndarray],None,None]:
         end_of_sequence_index = len(tokens)-len(self)+self.τ
@@ -77,8 +76,7 @@ class DelayCoordinateEmbeddingNLG:
 
     def _forecast_next_token(self, tokens:List[str]) -> str:
         tokens += [SpecialTokens.MASK.value]
-        key,embedding = self.delay_coordinate_embedding(tokens=tokens, delay=self.τ)
-        print(key)
+        _,embedding = self.delay_coordinate_embedding(tokens=tokens, delay=self.τ)
         return self.lorenz_method_of_analogies(embedding=embedding)
 
     def lorenz_method_of_analogies(self, embedding:ndarray) -> str:
@@ -88,20 +86,13 @@ class DelayCoordinateEmbeddingNLG:
             self.delay_coordinate_embeddings.values()
         ))
         nearest_key = self.retrieve_nearest_key(keys, similarities, self.k)
-        print(nearest_key)
-        print()
-        return tokenise(nearest_key)[-1] 
-
-    # def save_delay_coordinate_embeddings(self, embeddings:Dict[str,ndarray]) -> None:
-    #     with open('generators/dca.txt','w') as save_file:
-    #         for key,value in embeddings.items():
-    #             save_file.write(f'{key}:{value}\n')
+        return nearest_key.split()[-1] 
 
     @staticmethod
     def format_sequence(sequence:str, sequence_length:int, is_training_example:bool) -> List[str]:
         tokens = tokenise(sequence)
         padding_length = sequence_length - len(tokens)
-        if padding_length > 0:
+        if padding_length > 0 and is_training_example:
             tokens = pad(tokens=tokens,pad_length=padding_length)
         return add_special_tokens(tokens=tokens, include_eos=is_training_example)
 
