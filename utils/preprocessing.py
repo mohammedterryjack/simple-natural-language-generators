@@ -1,5 +1,8 @@
 from enum import Enum 
 from typing import List 
+from string import punctuation
+
+TRANSLATION_TABLE = "".maketrans(punctuation, " " * len(punctuation))
 
 class SpecialTokens(Enum):
     PAD = "<pad>"
@@ -7,11 +10,15 @@ class SpecialTokens(Enum):
     EOS = "<eos>"
     MASK = "<?>"
 
+def clean_text(text:str) -> str:
+    return text.lower().translate(TRANSLATION_TABLE)
+
 def tokenise(sentence:str) -> str:
-    return sentence.split()
+    return clean_text(sentence).split()
 
 def pad(tokens:List[str], pad_length:int) -> List[str]:
-    return [SpecialTokens.PAD.value]*pad_length + tokens
+    padding = [SpecialTokens.PAD.value]*pad_length
+    return tokens + padding
 
 def add_special_tokens(tokens:List[str], include_eos:bool) -> List[str]:
     tokens = [SpecialTokens.BOS.value] + tokens
