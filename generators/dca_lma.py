@@ -17,7 +17,7 @@ class DelayCoordinateEmbeddingNLG:
 
     def __init__(
         self, 
-        embedding_dimension:int=3, 
+        embedding_dimension:int=4, 
         embedding_delay:int=2, 
         max_generation_length:int=100,
         top_k:int=0,
@@ -57,8 +57,9 @@ class DelayCoordinateEmbeddingNLG:
         end_of_sequence_index = len(tokens)-len(self)+self.τ
         for start_span_index in range(end_of_sequence_index):
             end_span_index = start_span_index + len(self) - 1
+            selected_tokens = tokens[start_span_index:end_span_index]
             yield self.delay_coordinate_embedding(
-                tokens=tokens[start_span_index:end_span_index], 
+                tokens=selected_tokens, 
                 delay=self.τ
             )
 
@@ -109,7 +110,7 @@ class DelayCoordinateEmbeddingNLG:
 
     @staticmethod
     def retrieve_nearest_key(keys:List[str], similarities:List[float], sample_size:int) -> str:
-        return top_k_sampling(keys,similarities,sample_size) if sample_size > 0 else argmax(keys,similarities)
+        return top_k_sampling(keys,similarities,sample_size) if sample_size > 0 else argmax(keys,similarities,.76)
 
     @staticmethod
     def delay_coordinate_embedding(tokens:List[str], delay:int) -> Tuple[str,ndarray]:
