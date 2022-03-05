@@ -1,8 +1,12 @@
 from typing import List
 from random import choices 
 
-def argmax(candidates:List[str], similarities:List[float]) -> str:
+from utils.preprocessing import SpecialTokens
+
+def argmax(candidates:List[str], similarities:List[float], min_similarity:float) -> str:
     best_similarity = max(similarities)
+    if best_similarity < min_similarity:
+        return f"{SpecialTokens.NONE_FOUND.value} {SpecialTokens.EOS.value}"
     index_best = similarities.index(best_similarity)
     return candidates[index_best]
 

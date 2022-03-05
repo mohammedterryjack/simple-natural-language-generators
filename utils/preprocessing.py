@@ -9,6 +9,7 @@ class SpecialTokens(Enum):
     BOS = "<bos>"
     EOS = "<eos>"
     MASK = "<?>"
+    NONE_FOUND = "<none>"
 
 def clean_text(text:str) -> str:
     return text.lower().translate(TRANSLATION_TABLE)
