@@ -17,3 +17,7 @@ class FastFourierTransformNLG:
 
         #find nearest word for each forecasted value
         #return words as generated text
+
+        #FFT does regression on data
+        #use it to learn decision boundary for binary classification
+        #train multiple as one-vs-rest for multiclass classification
